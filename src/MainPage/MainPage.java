@@ -1,21 +1,27 @@
 package MainPage;
 
 import javax.swing.*;
-
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class MainPage  extends JFrame implements ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JComboBox comboBox_subject;
 	private JButton button_update;
 	private JTextField text_subject;
 	private JTable table_score;
 	private JLabel label_subject;
 	private Object subject[];
+	
+	private File file;
+	
 	
 	public MainPage(Object subject[]){
 		GUIInit();
@@ -92,10 +98,27 @@ public class MainPage  extends JFrame implements ActionListener{
 		layout.setConstraints(button_update, s);
 	}
 	
+	private String readFile(){
+		char contents[] = null;
+		file = new File("C:/Users/zhz/Desktop/text.txt");
+		try{
+			FileReader fin = new FileReader(file);
+			contents = new char[(int)file.length()];
+			fin.read(contents);
+			fin.close();
+		}catch(FileNotFoundException fe){
+			System.out.println("File not found");
+		}catch(IOException ioex){
+			System.out.println("IO not found");
+		}
+		System.out.println(new String(contents));
+		return new String(contents);
+	}
+	
 	public static void main(String args[]){
 		Object subject[] = {"高等数学","线性代数"};
-
 		MainPage mainpage = new MainPage(subject);
+		mainpage.readFile();
 		mainpage.setVisible(true);
 	}
 
