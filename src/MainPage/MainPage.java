@@ -29,9 +29,8 @@ public class MainPage  extends JFrame implements ActionListener{
 	private List<Subject> score;
 	
 	
-	public MainPage(Object subject[]){
+	public MainPage(){
 		GUIInit();
-		addComponet(subject);
 	}
 	
 	private void GUIInit(){
@@ -42,15 +41,15 @@ public class MainPage  extends JFrame implements ActionListener{
 		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 	}
 	
-	private void addComponet(Object subject[]){
+	private void addComponet(Object subject[],Object[][] data){
 		//comboBox_subject = new JComboBox(subject);
-        String[] columnNames = { "Name", "SchoolID", "Grade","","" };
-        Object[][] data = {
-        		{ "Kathy", "Smith", "Snowboarding", new Integer(5),new Boolean(false) },
-        		{ "John", "Doe", "Rowing", new Integer(3), new Boolean(true) },
-        		{ "Sue", "Black", "Knitting", new Integer(2),new Boolean(false) },
-        		{ "Jane", "White", "Speed reading", new Integer(20),new Boolean(true) },
-        		{ "Joe", "Brown", "Pool", new Integer(10), new Boolean(false) }};
+        String[] columnNames = { "Name", "SchoolID", "Subject","Score" };
+//        Object[][] data = {
+//        		{ "Kathy", "Smith", "Snowboarding", new Integer(5),new Boolean(false) },
+//        		{ "John", "Doe", "Rowing", new Integer(3), new Boolean(true) },
+//        		{ "Sue", "Black", "Knitting", new Integer(2),new Boolean(false) },
+//        		{ "Jane", "White", "Speed reading", new Integer(20),new Boolean(true) },
+//        		{ "Joe", "Brown", "Pool", new Integer(10), new Boolean(false) }};
 		
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints s  = new GridBagConstraints();
@@ -134,10 +133,23 @@ public class MainPage  extends JFrame implements ActionListener{
 		return score;
 	}
 	
+	private Object[][] listToObject(List<Subject> score){
+		int size = score.size();
+		Object[][] target = new Object[size][4];
+		for(int i = 0;i<score.size();i++){
+			Subject sco = score.get(i);
+			target[i][0] = sco.getId();
+			target[i][1] = sco.getName();
+			target[i][2] = sco.getSubject();
+			target[i][3] = sco.getScore();
+		}
+		return target;
+	}
+	
 	public static void main(String args[]){
 		Object subject[] = {"高等数学","线性代数"};
-		MainPage mainpage = new MainPage(subject);
-		mainpage.readFile();
+		MainPage mainpage = new MainPage();
+		mainpage.addComponet(subject, mainpage.listToObject(mainpage.readFile()));
 		mainpage.setVisible(true);
 	}
 
