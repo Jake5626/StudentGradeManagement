@@ -3,10 +3,14 @@ package MainPage;
 import javax.swing.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import Data.Subject;
 
 public class MainPage  extends JFrame implements ActionListener{
 	/**
@@ -21,6 +25,8 @@ public class MainPage  extends JFrame implements ActionListener{
 	private Object subject[];
 	
 	private File file;
+	
+	private List<Subject> score;
 	
 	
 	public MainPage(Object subject[]){
@@ -98,21 +104,34 @@ public class MainPage  extends JFrame implements ActionListener{
 		layout.setConstraints(button_update, s);
 	}
 	
-	private String readFile(){
-		char contents[] = null;
+	private List<Subject> readFile(){
+		score = new ArrayList<Subject>();
 		file = new File("C:/Users/zhz/Desktop/text.txt");
 		try{
-			FileReader fin = new FileReader(file);
-			contents = new char[(int)file.length()];
-			fin.read(contents);
+//			FileReader fin = new FileReader(file);
+			BufferedReader fin = new BufferedReader(new FileReader(file));
+//			contents = new char[(int)file.length()];
+			String line ;
+			while((line=fin.readLine())!=null){
+				String[] splitLine = line.split(" ");
+				Subject sub = new Subject();
+				sub.setId(splitLine[0]);
+				sub.setName(splitLine[1]);
+				sub.setSubject(splitLine[2]);
+				sub.setScore(splitLine[3]);
+				score.add(sub);
+			}
+//			fin.read(contents);
+
 			fin.close();
 		}catch(FileNotFoundException fe){
 			System.out.println("File not found");
 		}catch(IOException ioex){
 			System.out.println("IO not found");
 		}
-		System.out.println(new String(contents));
-		return new String(contents);
+//		System.out.println(new String(contents));
+		System.out.println(score);
+		return score;
 	}
 	
 	public static void main(String args[]){
