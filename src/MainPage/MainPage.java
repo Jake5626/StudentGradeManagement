@@ -1,11 +1,15 @@
 package MainPage;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.Event;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +20,19 @@ public class MainPage  extends JFrame implements ActionListener{
 	/**
 	 * 
 	 */
+	DefaultTableModel dm = new DefaultTableModel();
+	
 	private static final long serialVersionUID = 1L;
 	private JComboBox comboBox_subject;
 	private JButton button_update;
 	private JTextField text_subject;
-	private JTable table_score;
+	private JTable table_score = new JTable(dm);
 	private JLabel label_subject;
+	private JScrollPane scrollPane;
 	private Object subject[];
 	
 	private File file;
-	
+
 	private List<Subject> score;
 	
 	
@@ -41,15 +48,10 @@ public class MainPage  extends JFrame implements ActionListener{
 		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 	}
 	
-	private void addComponet(Object subject[],Object[][] data){
-		//comboBox_subject = new JComboBox(subject);
-        String[] columnNames = { "Name", "SchoolID", "Subject","Score" };
-//        Object[][] data = {
-//        		{ "Kathy", "Smith", "Snowboarding", new Integer(5),new Boolean(false) },
-//        		{ "John", "Doe", "Rowing", new Integer(3), new Boolean(true) },
-//        		{ "Sue", "Black", "Knitting", new Integer(2),new Boolean(false) },
-//        		{ "Jane", "White", "Speed reading", new Integer(20),new Boolean(true) },
-//        		{ "Joe", "Brown", "Pool", new Integer(10), new Boolean(false) }};
+	private void addComponet(Object subject[]){
+		MainPage mp = new MainPage();
+
+        String[] columnNames = { "学号", "姓名", "成绩","排名","等级" };
 		
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints s  = new GridBagConstraints();
@@ -59,21 +61,37 @@ public class MainPage  extends JFrame implements ActionListener{
 		JPanel panel_blank1 = new JPanel(null);
 		JPanel panel_blank2 = new JPanel(null);
 		
-		//panel_blank.setBackground(Color.BLACK);
 		
 		text_subject = new JTextField("科目");
 		label_subject = new JLabel("科目");
-		button_update = new JButton("更改");
+		button_update = new JButton("OK");
 		comboBox_subject = new JComboBox<Object>(subject);
-		table_score = new JTable(data,columnNames);
+		scrollPane = new JScrollPane();
 		
 		table_score.setRowMargin(0);
+		table_score.getTableHeader().setVisible(true);
+		scrollPane.setViewportView(table_score);
 		
 		this.setLayout(layout);
 		this.add(panel_blank1);
 		this.add(label_subject);
 		this.add(comboBox_subject);
-		this.add(table_score);
+		
+		comboBox_subject.addActionListener(Event->{
+			System.out.println(comboBox_subject.getSelectedIndex());
+			switch(comboBox_subject.getSelectedIndex()){
+				case 0:		table_score.removeAll();
+								table_score.setModel(new DefaultTableModel(mp.listToObject(mp.readFile("text.txt")),columnNames));
+								table_score.updateUI();
+				break;
+				case 1:		table_score.removeAll();
+								table_score.setModel(new DefaultTableModel(mp.listToObject(mp.readFile("text2.txt")),columnNames));
+								table_score.updateUI();
+				break;
+				}
+		});
+	
+		this.add(scrollPane);
 		this.add(panel_blank2);
 		this.add(button_update);
 		
@@ -92,7 +110,7 @@ public class MainPage  extends JFrame implements ActionListener{
 		s.gridwidth = 0;
 		s.weightx = 0;
 		s.weighty = 0.8;
-		layout.setConstraints(table_score, s);
+		layout.setConstraints(scrollPane, s);
 		s.gridwidth = 1;
 		s.weightx = 0.8;
 		s.weighty = 0;
@@ -103,24 +121,22 @@ public class MainPage  extends JFrame implements ActionListener{
 		layout.setConstraints(button_update, s);
 	}
 	
-	private List<Subject> readFile(){
+	private List<Subject> readFile(String fileRoute){
 		score = new ArrayList<Subject>();
-		file = new File("C:/Users/zhz/Desktop/text.txt");
+		file = new File(fileRoute);
 		try{
-//			FileReader fin = new FileReader(file);
 			BufferedReader fin = new BufferedReader(new FileReader(file));
-//			contents = new char[(int)file.length()];
 			String line ;
 			while((line=fin.readLine())!=null){
 				String[] splitLine = line.split(" ");
 				Subject sub = new Subject();
 				sub.setId(splitLine[0]);
 				sub.setName(splitLine[1]);
-				sub.setSubject(splitLine[2]);
-				sub.setScore(splitLine[3]);
+				sub.setScore(splitLine[2]);
+				sub.setRank(splitLine[3]);
+				sub.setLevel(splitLine[4]);
 				score.add(sub);
 			}
-//			fin.read(contents);
 
 			fin.close();
 		}catch(FileNotFoundException fe){
@@ -128,20 +144,20 @@ public class MainPage  extends JFrame implements ActionListener{
 		}catch(IOException ioex){
 			System.out.println("IO not found");
 		}
-//		System.out.println(new String(contents));
 		System.out.println(score);
 		return score;
 	}
 	
 	private Object[][] listToObject(List<Subject> score){
 		int size = score.size();
-		Object[][] target = new Object[size][4];
+		Object[][] target = new Object[size][5];
 		for(int i = 0;i<score.size();i++){
 			Subject sco = score.get(i);
 			target[i][0] = sco.getId();
 			target[i][1] = sco.getName();
-			target[i][2] = sco.getSubject();
-			target[i][3] = sco.getScore();
+			target[i][2] = sco.getScore();
+			target[i][3] = sco.getRank();
+			target[i][4] = sco.getLevel();
 		}
 		return target;
 	}
@@ -149,13 +165,12 @@ public class MainPage  extends JFrame implements ActionListener{
 	public static void main(String args[]){
 		Object subject[] = {"高等数学","线性代数"};
 		MainPage mainpage = new MainPage();
-		mainpage.addComponet(subject, mainpage.listToObject(mainpage.readFile()));
+		mainpage.addComponet(subject);
 		mainpage.setVisible(true);
 	}
-
+                                                                                                                                                                                                                                                                        
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 }

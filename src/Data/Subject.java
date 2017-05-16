@@ -4,21 +4,15 @@ public class Subject {
 	
 	private String id;
 	private String name;
-	private String subject;
 	private String score;
+	private String rank;
+	private String level;
 	
 	public Subject() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
 
 	public String getScore() {
 		return score;
@@ -44,10 +38,30 @@ public class Subject {
 		this.id = id;
 	}
 
+
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+
 	@Override
 	public String toString() {
-		return "Subject [id=" + id + ", name=" + name + ", subject=" + subject + ", score=" + score + "]";
+		return "Subject [id=" + id + ", name=" + name + ", score=" + score + ", rank=" + rank + ", level=" + level
+				+ "]";
 	}
+	
 	
 	
 }
