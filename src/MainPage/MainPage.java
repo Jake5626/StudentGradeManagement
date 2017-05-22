@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Data.Subject;
+import Data.Others;
 
 public class MainPage  extends JFrame implements ActionListener{
 	/**
@@ -50,6 +51,7 @@ public class MainPage  extends JFrame implements ActionListener{
 	
 	private void addComponet(Object subject[]){
 		MainPage mp = new MainPage();
+		Others o = new Others();
 
         String[] columnNames = { "学号", "姓名", "成绩","排名","等级" };
 		
@@ -80,17 +82,26 @@ public class MainPage  extends JFrame implements ActionListener{
 		comboBox_subject.addActionListener(Event->{
 			System.out.println(comboBox_subject.getSelectedIndex());
 			switch(comboBox_subject.getSelectedIndex()){
-				case 0:		table_score.removeAll();
+				case 0:		
+								o.setIndex_number(comboBox_subject.getSelectedIndex());
+								table_score.removeAll();
 								table_score.setModel(new DefaultTableModel(mp.listToObject(mp.readFile("text.txt")),columnNames));
 								table_score.updateUI();
 				break;
-				case 1:		table_score.removeAll();
+				case 1:		
+								o.setIndex_number(comboBox_subject.getSelectedIndex());
+								table_score.removeAll();
 								table_score.setModel(new DefaultTableModel(mp.listToObject(mp.readFile("text2.txt")),columnNames));
 								table_score.updateUI();
 				break;
 				}
 		});
 	
+		button_update.addActionListener(Event->{
+			AddPage addPage = new AddPage();
+			addPage.setVisible(true);
+		});
+		
 		this.add(scrollPane);
 		this.add(panel_blank2);
 		this.add(button_update);
